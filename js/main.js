@@ -96,3 +96,26 @@ class ARExperience {
 window.addEventListener('load', () => {
     new ARExperience();
 });
+
+// All'inizio di main.js
+window.addEventListener('error', function(e) {
+    console.error('Errore JavaScript:', e.message);
+    alert('Si è verificato un errore: ' + e.message);
+});
+
+// Modifica il costruttore della classe ARExperience
+constructor()
+{
+    try {
+        console.log("Inizializzazione ARExperience...");
+        this.dialogSystem = new DialogSystem();
+        this.loadedModels = {};
+        console.log("Setup targets...");
+        this.setupTargets();
+
+        // Resto del codice...
+    } catch (error) {
+        console.error("Errore durante l'inizializzazione:", error);
+        alert("Errore durante l'inizializzazione: " + error.message);
+    }
+}
