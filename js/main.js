@@ -61,14 +61,9 @@ class ARExperience {
     setupTargets() {
         const targets = document.querySelectorAll('a-entity[mindar-image-target]');
 
-        targets.forEach(target => {
-            const targetIndexAttr = target.getAttribute('mindar-image-target');
-            if (!targetIndexAttr) {
-                console.warn("Target senza attributo mindar-image-target trovato");
-                return;
-            }
-
-            const targetIndex = targetIndexAttr.targetIndex;
+        targets.forEach((target, index) => {
+            // Usa direttamente l'indice del ciclo invece di tentare di estrarlo dall'attributo
+            const targetIndex = index;
             console.log("Target trovato con indice:", targetIndex);
 
             // Carica il modello 3D per questo target
@@ -92,26 +87,41 @@ class ARExperience {
     }
 
     loadModel(target, targetIndex) {
-        if (!window.characterData[targetIndex]) return;
-
-        const data = window.characterData[targetIndex];
-
-        // Crea l'entità per il modello 3D
-        const modelEntity = document.createElement('a-entity');
-        modelEntity.setAttribute('gltf-model', `#${data.modelId}`);
-        modelEntity.setAttribute('position', data.position);
-        modelEntity.setAttribute('scale', data.scale);
-        modelEntity.setAttribute('rotation', data.rotation);
-
-        // Aggiungi l'animation-mixer se è specificata un'animazione
-        if (data.animation) {
-            modelEntity.setAttribute('animation-mixer', `clip: ${data.animation}; loop: repeat; timeScale: 1`);
+        if (!window.characterData[targetIndex]) {
+            console.warn(`Nessun dato per il target ${targetIndex}`);
+            return;
         }
 
-        // Aggiungi il modello al target
-        target.appendChild(modelEntity);
+        const data = window.characterData[targetIndex];
+        console.log(`Caricamento modello per target ${targetIndex}:`, data.modelId);
 
-        console.log(`Modello caricato per target ${targetIndex}`);
+        try {
+            // Verifica che il modello esista
+            const modelAsset = document.querySelector(`#${data.modelId}`);
+            if (!modelAsset) {
+                console.error(`Modello #${data.modelId} non trovato nelle risorse`);
+                return;
+            }
+
+            // Crea l'entità per il modello 3D
+            const modelEntity = document.createElement('a-entity');
+            modelEntity.setAttribute('gltf-model', `#${data.modelId}`);
+            modelEntity.setAttribute('position', data.position);
+            modelEntity.setAttribute('scale', data.scale);
+            modelEntity.setAttribute('rotation', data.rotation);
+
+            // Aggiungi l'animation-mixer se è specificata un'animazione
+            if (data.animation) {
+                modelEntity.setAttribute('animation-mixer', `clip: ${data.animation}; loop: repeat; timeScale: 1`);
+            }
+
+            // Aggiungi il modello al target
+            target.appendChild(modelEntity);
+
+            console.log(`Modello caricato per target ${targetIndex}`);
+        } catch (error) {
+            console.error(`Errore nel caricamento del modello per target ${targetIndex}:`, error);
+        }
     }
 }
 
