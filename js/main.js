@@ -1,24 +1,24 @@
 // Database dei personaggi e dei dialoghi
 const characterData = {
     "0": { // Corrisponde a targetIndex: 0
-        modelId: "robot-model",
+        modelId: "fiorellino-model",
         position: "0 0 0",
         scale: "0.5 0.5 0.5",
         rotation: "0 0 0",
         animation: "idle",
-        dialog: "Ciao! Sono il Robot Guida. Benvenuto nella nostra avventura interattiva! Cosa ti piacerebbe sapere?",
+        dialog: "Ciao! Sono Fiorellino. Benvenuto nella nostra avventura interattiva! Cosa ti piacerebbe sapere?",
         choices: [
             { text: "Raccontami la storia di questo luogo", nextTarget: 1 },
             { text: "Quali sono le attività che posso fare qui?", nextTarget: 1 }
         ]
     },
     "1": { // Corrisponde a targetIndex: 1
-        modelId: "ghost-model",
+        modelId: "fiorellino-model",
         position: "0 0 0",
         scale: "0.2 0.2 0.2",
         rotation: "0 0 0",
         animation: "idle",
-        dialog: "Eccomi! Sono lo Spirito del Luogo. Ti mostrerò dei segreti nascosti. Dove vuoi andare?",
+        dialog: "Eccomi! Sono di nuovo Fiorellino. Ti mostrerò dei segreti nascosti. Dove vuoi andare?",
         choices: [
             { text: "Portami al giardino segreto", nextTarget: 0 },
             { text: "Voglio vedere la sala dei tesori", nextTarget: 0 }
