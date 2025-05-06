@@ -1,6 +1,6 @@
 // Database dei personaggi e dei dialoghi
-const characterData = {
-    "0": {
+window.characterData = {
+    "0": { // Corrisponde a targetIndex: 0
         modelId: "fiorellino-model",
         position: "0 0 0",
         scale: "0.5 0.5 0.5",
@@ -12,7 +12,7 @@ const characterData = {
             { text: "Quali sono le attività che posso fare qui?", nextTarget: 1 }
         ]
     },
-    "1": {
+    "1": { // Corrisponde a targetIndex: 1
         modelId: "fiorellino-model",
         position: "0 0 0",
         scale: "0.2 0.2 0.2",
@@ -72,7 +72,7 @@ class ARExperience {
             console.log("Target trovato con indice:", targetIndex);
 
             // Carica il modello 3D per questo target
-            if (characterData[targetIndex]) {
+            if (window.characterData[targetIndex]) {
                 this.loadModel(target, targetIndex);
             } else {
                 console.warn(`Nessun dato carattere trovato per targetIndex: ${targetIndex}`);
@@ -92,9 +92,9 @@ class ARExperience {
     }
 
     loadModel(target, targetIndex) {
-        if (!characterData[targetIndex]) return;
+        if (!window.characterData[targetIndex]) return;
 
-        const data = characterData[targetIndex];
+        const data = window.characterData[targetIndex];
 
         // Crea l'entità per il modello 3D
         const modelEntity = document.createElement('a-entity');

@@ -1,5 +1,5 @@
 // Sistema di gestione dei dialoghi
-class DialogSystem {
+window.DialogSystem = class {
     constructor() {
         this.dialogContainer = document.querySelector('.dialog-container');
         this.dialogText = document.querySelector('.dialog-text');
@@ -12,9 +12,9 @@ class DialogSystem {
      * @param {string} targetIndex - L'indice del target rilevato
      */
     showDialog(targetIndex) {
-        if (!characterData[targetIndex]) return;
+        if (!window.characterData[targetIndex]) return;
 
-        const data = characterData[targetIndex];
+        const data = window.characterData[targetIndex];
         this.currentTarget = targetIndex;
 
         // Imposta il testo del dialogo
