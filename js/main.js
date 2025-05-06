@@ -1,6 +1,6 @@
 // Database dei personaggi e dei dialoghi
 const characterData = {
-    "0": { // Corrisponde a targetIndex: 0
+    "0": {
         modelId: "fiorellino-model",
         position: "0 0 0",
         scale: "0.5 0.5 0.5",
@@ -12,7 +12,7 @@ const characterData = {
             { text: "Quali sono le attività che posso fare qui?", nextTarget: 1 }
         ]
     },
-    "1": { // Corrisponde a targetIndex: 1
+    "1": {
         modelId: "fiorellino-model",
         position: "0 0 0",
         scale: "0.2 0.2 0.2",
@@ -26,33 +26,56 @@ const characterData = {
     }
 };
 
+// Gestione degli errori globale
+window.addEventListener('error', function(e) {
+    console.error('Errore JavaScript:', e.message);
+    alert('Si è verificato un errore: ' + e.message);
+});
+
 // Sistema di gestione dei marker e dei modelli 3D
 class ARExperience {
     constructor() {
-        this.dialogSystem = new DialogSystem();
-        this.loadedModels = {};
-        this.setupTargets();
+        try {
+            console.log("Inizializzazione ARExperience...");
+            // Crea una nuova istanza di DialogSystem
+            this.dialogSystem = new DialogSystem();
+            this.loadedModels = {};
+            console.log("Setup targets...");
+            this.setupTargets();
 
-        // Nascondi la schermata di caricamento dopo 3 secondi
-        setTimeout(() => {
-            document.querySelector('.loading-screen').style.display = 'none';
-
-            // Nascondi le istruzioni dopo 10 secondi
+            // Nascondi la schermata di caricamento dopo 3 secondi
             setTimeout(() => {
-                document.querySelector('.instructions').style.display = 'none';
-            }, 10000);
-        }, 3000);
+                document.querySelector('.loading-screen').style.display = 'none';
+
+                // Nascondi le istruzioni dopo 10 secondi
+                setTimeout(() => {
+                    document.querySelector('.instructions').style.display = 'none';
+                }, 10000);
+            }, 3000);
+        } catch (error) {
+            console.error("Errore durante l'inizializzazione:", error);
+            alert("Errore durante l'inizializzazione: " + error.message);
+        }
     }
 
     setupTargets() {
         const targets = document.querySelectorAll('a-entity[mindar-image-target]');
 
         targets.forEach(target => {
-            const targetIndex = target.getAttribute('mindar-image-target').targetIndex;
+            const targetIndexAttr = target.getAttribute('mindar-image-target');
+            if (!targetIndexAttr) {
+                console.warn("Target senza attributo mindar-image-target trovato");
+                return;
+            }
+
+            const targetIndex = targetIndexAttr.targetIndex;
+            console.log("Target trovato con indice:", targetIndex);
 
             // Carica il modello 3D per questo target
             if (characterData[targetIndex]) {
                 this.loadModel(target, targetIndex);
+            } else {
+                console.warn(`Nessun dato carattere trovato per targetIndex: ${targetIndex}`);
             }
 
             // Aggiungi eventi per il rilevamento del target
@@ -93,29 +116,13 @@ class ARExperience {
 }
 
 // Inizializza l'esperienza AR quando la pagina è caricata
-window.addEventListener('load', () => {
-    new ARExperience();
-});
-
-// All'inizio di main.js
-window.addEventListener('error', function(e) {
-    console.error('Errore JavaScript:', e.message);
-    alert('Si è verificato un errore: ' + e.message);
-});
-
-// Modifica il costruttore della classe ARExperience
-constructor()
-{
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM completamente caricato e analizzato");
     try {
-        console.log("Inizializzazione ARExperience...");
-        this.dialogSystem = new DialogSystem();
-        this.loadedModels = {};
-        console.log("Setup targets...");
-        this.setupTargets();
-
-        // Resto del codice...
+        const arExperience = new ARExperience();
+        console.log("AR Experience inizializzata con successo");
     } catch (error) {
-        console.error("Errore durante l'inizializzazione:", error);
-        alert("Errore durante l'inizializzazione: " + error.message);
+        console.error("Errore durante l'inizializzazione di ARExperience:", error);
+        alert("Errore: " + error.message);
     }
-}
+});
