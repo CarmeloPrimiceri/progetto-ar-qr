@@ -1,124 +1,94 @@
-/**
- * Script principale per l'applicazione AR con QR Code
- * Gestisce il caricamento dei modelli 3D e l'interazione con i marker AR
- */
-
 // Database dei personaggi e dei dialoghi
 const characterData = {
-    "marker1": {
-        modelUrl: "https://cdn.glitch.global/30af85b7-e880-4af1-a3be-82df84a91818/animated_robot.glb",
+    "0": { // Corrisponde a targetIndex: 0
+        modelId: "robot-model",
         position: "0 0 0",
         scale: "0.5 0.5 0.5",
         rotation: "0 0 0",
         animation: "idle",
         dialog: "Ciao! Sono il Robot Guida. Benvenuto nella nostra avventura interattiva! Cosa ti piacerebbe sapere?",
         choices: [
-            { text: "Raccontami la storia di questo luogo", nextMarker: "marker2" },
-            { text: "Quali sono le attività che posso fare qui?", nextMarker: "marker2" }
+            { text: "Raccontami la storia di questo luogo", nextTarget: 1 },
+            { text: "Quali sono le attività che posso fare qui?", nextTarget: 1 }
         ]
     },
-    "marker2": {
-        modelUrl: "https://cdn.glitch.global/30af85b7-e880-4af1-a3be-82df84a91818/ghost.glb",
+    "1": { // Corrisponde a targetIndex: 1
+        modelId: "ghost-model",
         position: "0 0 0",
         scale: "0.2 0.2 0.2",
         rotation: "0 0 0",
         animation: "idle",
         dialog: "Eccomi! Sono lo Spirito del Luogo. Ti mostrerò dei segreti nascosti. Dove vuoi andare?",
         choices: [
-            { text: "Portami al giardino segreto", nextMarker: "marker1" },
-            { text: "Voglio vedere la sala dei tesori", nextMarker: "marker1" }
+            { text: "Portami al giardino segreto", nextTarget: 0 },
+            { text: "Voglio vedere la sala dei tesori", nextTarget: 0 }
         ]
     }
 };
 
-/**
- * Classe che gestisce l'esperienza AR
- */
+// Sistema di gestione dei marker e dei modelli 3D
 class ARExperience {
     constructor() {
         this.dialogSystem = new DialogSystem();
         this.loadedModels = {};
-        this.setupMarkerEvents();
-        
+        this.setupTargets();
+
         // Nascondi la schermata di caricamento dopo 3 secondi
         setTimeout(() => {
             document.querySelector('.loading-screen').style.display = 'none';
-            
+
             // Nascondi le istruzioni dopo 10 secondi
             setTimeout(() => {
                 document.querySelector('.instructions').style.display = 'none';
             }, 10000);
         }, 3000);
     }
-    
-    /**
-     * Configura gli eventi per i marker AR
-     */
-    setupMarkerEvents() {
-        const markers = document.querySelectorAll('a-marker');
-        
-        markers.forEach(marker => {
-            // Evento quando il marker viene trovato
-            marker.addEventListener('markerFound', () => {
-                const markerId = marker.id;
-                console.log(`Marker trovato: ${markerId}`);
-                
-                // Carica il modello 3D se non è già stato caricato
-                if (!this.loadedModels[markerId]) {
-                    this.loadModel(marker, markerId);
-                }
-                
-                // Mostra il dialogo
-                this.dialogSystem.showDialog(markerId);
+
+    setupTargets() {
+        const targets = document.querySelectorAll('a-entity[mindar-image-target]');
+
+        targets.forEach(target => {
+            const targetIndex = target.getAttribute('mindar-image-target').targetIndex;
+
+            // Carica il modello 3D per questo target
+            if (characterData[targetIndex]) {
+                this.loadModel(target, targetIndex);
+            }
+
+            // Aggiungi eventi per il rilevamento del target
+            target.addEventListener('targetFound', () => {
+                console.log(`Target trovato: ${targetIndex}`);
+                this.dialogSystem.showDialog(targetIndex);
             });
-            
-            // Evento quando il marker viene perso
-            marker.addEventListener('markerLost', () => {
-                const markerId = marker.id;
-                console.log(`Marker perso: ${markerId}`);
-                
-                // Nascondi il dialogo solo se appartiene a questo marker
-                if (this.dialogSystem.currentMarker === markerId) {
-                    this.dialogSystem.hideDialog();
-                }
+
+            target.addEventListener('targetLost', () => {
+                console.log(`Target perso: ${targetIndex}`);
+                this.dialogSystem.hideDialog();
             });
         });
     }
-    
-    /**
-     * Carica un modello 3D per un marker specifico
-     * @param {Element} marker - Elemento DOM del marker AR
-     * @param {string} markerId - ID del marker
-     */
-    loadModel(marker, markerId) {
-        if (!characterData[markerId]) return;
-        
-        const data = characterData[markerId];
-        
-        // Rimuovi eventuali modelli precedenti
-        while (marker.firstChild) {
-            marker.removeChild(marker.firstChild);
-        }
-        
+
+    loadModel(target, targetIndex) {
+        if (!characterData[targetIndex]) return;
+
+        const data = characterData[targetIndex];
+
         // Crea l'entità per il modello 3D
         const modelEntity = document.createElement('a-entity');
-        modelEntity.setAttribute('gltf-model', data.modelUrl);
+        modelEntity.setAttribute('gltf-model', `#${data.modelId}`);
         modelEntity.setAttribute('position', data.position);
         modelEntity.setAttribute('scale', data.scale);
         modelEntity.setAttribute('rotation', data.rotation);
-        
+
         // Aggiungi l'animation-mixer se è specificata un'animazione
         if (data.animation) {
             modelEntity.setAttribute('animation-mixer', `clip: ${data.animation}; loop: repeat; timeScale: 1`);
         }
-        
-        // Aggiungi il modello al marker
-        marker.appendChild(modelEntity);
-        
-        // Segna il modello come caricato
-        this.loadedModels[markerId] = true;
-        
-        console.log(`Modello caricato per ${markerId}: ${data.modelUrl}`);
+
+        // Aggiungi il modello al target
+        target.appendChild(modelEntity);
+
+        console.log(`Modello caricato per target ${targetIndex}`);
     }
 }
 

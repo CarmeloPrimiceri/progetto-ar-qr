@@ -4,8 +4,7 @@ Questa cartella è destinata a contenere i modelli 3D utilizzati nell'applicazio
 
 ## Modelli utilizzati nel prototipo
 
-1. **Fiorellino**: [animated_robot.glb](https://cdn.glitch.global/30af85b7-e880-4af1-a3be-82df84a91818/animated_robot.glb)
-2. **Fantasma**: [ghost.glb](https://cdn.glitch.global/30af85b7-e880-4af1-a3be-82df84a91818/ghost.glb)
+1. **Fiorellino**
 
 ## Aggiungere modelli personalizzati
 
