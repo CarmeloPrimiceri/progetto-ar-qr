@@ -106,20 +106,12 @@
 <a-scene
         embedded
         arjs="sourceType: webcam;
-              videoTexture: true;
-              debugUIEnabled: true;
-              trackingMethod: best;
-              maxDetectionRate: 30;
-              canvasWidth: 480;
-              canvasHeight: 360;
-              patternRatio: 0.85;
-              cameraParametersUrl: https://raw.githack.com/AR-js-org/AR.js/master/data/camera_para.dat;"
-        renderer="antialias: true;
-                 alpha: true;
-                 precision: mediump;
-                 logarithmicDepthBuffer: true;"
+          debugUIEnabled: true;
+          trackingMethod: best;
+          patternRatio: 0.85;
+          cameraParametersUrl: https://raw.githack.com/AR-js-org/AR.js/master/data/camera_para.dat;"
+        renderer="antialias: true; alpha: true;"
         vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false"
         loading-screen="enabled: false">
 
     <a-assets>
@@ -176,50 +168,6 @@
 
 <!-- Script per gestire lo zoom e il debug -->
 <script>
-    // Funzione per resettare lo zoom della fotocamera
-    function resetCameraZoom() {
-        const videoEl = document.querySelector('video');
-        if (!videoEl || !videoEl.srcObject) {
-            console.log('Video element o srcObject non trovato');
-            return;
-        }
-
-        const tracks = videoEl.srcObject.getVideoTracks();
-        if (!tracks || tracks.length === 0) {
-            console.log('Nessuna traccia video trovata');
-            return;
-        }
-
-        const track = tracks[0];
-
-        // Verifica se il browser supporta getCapabilities
-        if (!track.getCapabilities) {
-            console.log('getCapabilities non supportato');
-            return;
-        }
-
-        const capabilities = track.getCapabilities();
-        console.log('Capabilities fotocamera:', capabilities);
-
-        // Verifica se lo zoom è supportato
-        if (!capabilities.zoom) {
-            console.log('Zoom non supportato su questo dispositivo');
-            return;
-        }
-
-        // Resetta lo zoom a 1.0 (nessuno zoom)
-        console.log('Tentativo di reset dello zoom a 1.0...');
-        track.applyConstraints({
-            advanced: [{zoom: 1.0}]
-        }).then(() => {
-            console.log('Zoom resettato con successo');
-            // Verifica lo stato attuale
-            const settings = track.getSettings();
-            console.log('Impostazioni attuali fotocamera:', settings);
-        }).catch(error => {
-            console.error('Errore nel reset dello zoom:', error);
-        });
-    }
 
     // Soluzione più drastica: ferma e riavvia la fotocamera
     function restartCamera() {
@@ -378,5 +326,6 @@
 <!-- JavaScript originali dell'applicazione -->
 <script src="js/dialog.js"></script>
 <script src="js/main.js"></script>
+<script src="js/camera.js"></script>
 </body>
 </html>
