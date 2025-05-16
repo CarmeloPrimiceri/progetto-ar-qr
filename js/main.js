@@ -1,7 +1,7 @@
 // Database dei personaggi e dei dialoghi
 window.characterData = {
-    "brochure": { // QR code iniziale della brochure
-        modelId: "spiritello-model",
+    "inizio": { // QR code iniziale della brochure
+        modelId: "spiritello-inizio",
         position: "0 0.75 0",
         scale: "1.5 1.5 1.5",
         rotation: "0 0 0",
@@ -14,12 +14,12 @@ window.characterData = {
         ],
         nextDialog: "Ho sentito che uno spiritello sta lasciando pacchi in giro...e un altro sta raccogliendo acqua da un tubo che perde. Da chi vuoi andare prima?",
         nextChoices: [
-            { text: "Pacchi (Qr code giallo)", nextMarker: "giallo" },
-            { text: "Tubo (Qr code blu)", nextMarker: "blu" }
+            { text: "Pacchi (marker giallo)", nextMarker: "giallo" },
+            { text: "Tubo (marker blu)", nextMarker: "blu" }
         ]
     },
     "giallo": { // QR code giallo - spiritello con i pacchi
-        modelId: "spiritello-model",
+        modelId: "spiritello-giallo",
         position: "0 0.75 0",
         scale: "1.5 1.5 1.5",
         rotation: "0 0 0",
@@ -42,12 +42,12 @@ window.characterData = {
         ],
         conclusion: "Grazie davvero...credo che qualcun altro abbia bisogno del tuo aiuto!",
         conclusionChoices: [
-            { text: "Vai al Qr code blu", nextMarker: "blu", condition: "firstChoice" },
-            { text: "Vai al Qr rosa 1", nextMarker: "rosa1", condition: "notFirstChoice" }
+            { text: "Vai al marker blu", nextMarker: "blu", condition: "firstChoice" },
+            { text: "Vai al marker rosa", nextMarker: "rosa", condition: "notFirstChoice" }
         ]
     },
     "blu": { // QR code blu - spiritello con l'acqua
-        modelId: "spiritello-model",
+        modelId: "spiritello-blu",
         position: "0 0.75 0",
         scale: "1.5 1.5 1.5",
         rotation: "0 0 0",
@@ -61,11 +61,11 @@ window.characterData = {
         ],
         nextDialog: "Lo spiritello sembra andare troppo di fretta, ma ti indica una direzione.",
         nextChoices: [
-            { text: "Vai al tubo che perde (Vai al Qr code blu 2)", nextMarker: "blu2" }
+            { text: "Vai al tubo che perde (Vai al marker blu 2)", nextMarker: "blu2" }
         ]
     },
     "blu2": { // QR code blu 2 - continuazione tubo
-        modelId: "spiritello-model",
+        modelId: "spiritello-blu2",
         position: "0 0.75 0",
         scale: "1.5 1.5 1.5",
         rotation: "0 0 0",
@@ -73,11 +73,11 @@ window.characterData = {
         character: "spiritello-blu",
         dialog: "Chiudi il tubo.",
         choices: [
-            { text: "Chiudi il tubo (Vai al Qr code blu 3)", nextMarker: "blu3" }
+            { text: "Chiudi il tubo (Vai al marker blu 3)", nextMarker: "blu3" }
         ]
     },
     "blu3": { // QR code blu 3 - tubo chiuso
-        modelId: "spiritello-model",
+        modelId: "spiritello-blu3",
         position: "0 0.75 0",
         scale: "1.5 1.5 1.5",
         rotation: "0 0 0",
@@ -91,12 +91,12 @@ window.characterData = {
         ],
         nextDialog: "che bello, noi spiritelli ti ringraziamo. Forse c'è ancora qualcuno che devi aiutare...perché non vai a dare un'occhiata?",
         nextChoices: [
-            { text: "Vai al Qr code giallo", nextMarker: "giallo", condition: "notFirstChoice" },
-            { text: "Vai al Qr code rosa 1", nextMarker: "rosa1", condition: "firstChoice" }
+            { text: "Vai al marker giallo", nextMarker: "giallo", condition: "notFirstChoice" },
+            { text: "Vai al marker rosa", nextMarker: "rosa", condition: "firstChoice" }
         ]
     },
-    "rosa1": { // QR code rosa 1
-        modelId: "spiritello-model",
+    "rosa": { // QR code rosa 1
+        modelId: "spiritello-rosa",
         position: "0 0.75 0",
         scale: "1.5 1.5 1.5",
         rotation: "0 0 0",
@@ -114,7 +114,7 @@ window.characterData = {
         ]
     },
     "rosso": { // QR code rosso - spiritello cattivo
-        modelId: "spiritello-model",
+        modelId: "spiritello-rosso",
         position: "0 0.75 0",
         scale: "1.5 1.5 1.5",
         rotation: "0 0 0",
@@ -141,7 +141,7 @@ window.characterData = {
         ]
     },
     "arcobaleno": { // QR code arcobaleno - finale
-        modelId: "spiritello-model",
+        modelId: "spiritello-arcobaleno",
         position: "0 0.75 0",
         scale: "1.5 1.5 1.5",
         rotation: "0 0 0",

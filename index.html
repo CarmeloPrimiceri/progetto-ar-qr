@@ -61,7 +61,14 @@
 
     <a-assets>
         <!-- Modelli 3D per i diversi spiritelli -->
-        <a-asset-item id="spiritello-model" src="assets/models/Fiorellino.glb"></a-asset-item>
+        <a-asset-item id="spiritello-inizio" src="assets/models/Fiorellino.glb"></a-asset-item>
+        <a-asset-item id="spiritello-giallo" src="assets/models/Fiorellino.glb"></a-asset-item>
+        <a-asset-item id="spiritello-blu" src="assets/models/Fiorellino.glb"></a-asset-item>
+        <a-asset-item id="spiritello-blu2" src="assets/models/Fiorellino.glb"></a-asset-item>
+        <a-asset-item id="spiritello-blu3" src="assets/models/Fiorellino.glb"></a-asset-item>
+        <a-asset-item id="spiritello-rosa" src="assets/models/Fiorellino.glb"></a-asset-item>
+        <a-asset-item id="spiritello-rosso" src="assets/models/Fiorellino.glb"></a-asset-item>
+        <a-asset-item id="spiritello-arcobaleno" src="assets/models/Fiorellino.glb"></a-asset-item>
 
         <!-- Audio di sottofondo -->
         <audio id="background-music" src="assets/audio/background-music.mp3" preload="auto" loop></audio>
@@ -70,18 +77,29 @@
     <!-- Entità audio che riproduce la musica di sottofondo -->
     <a-entity sound="src: #background-music; autoplay: true; loop: true; volume: 0.5"></a-entity>
 
-    <!-- Utilizziamo marker pattern predefiniti che funzionano sicuramente -->
-    <!-- Brochure - Marker Hiro -->
-    <a-marker id="brochure" preset="hiro" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
-        <!-- Il modello 3D verrà inserito dinamicamente tramite JavaScript -->
+    <a-marker id="inizio" type="pattern" url="assets/patterns/pattern-INIZIO.patt" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
     </a-marker>
 
-    <!-- I marker pattern sono più affidabili e possono essere creati in seguito per ogni spiritello -->
-    <!-- Esempio di come definire un marker pattern personalizzato: -->
-    <!--
-    <a-marker id="blu" type="pattern" url="assets/patterns/pattern-blu.patt" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+    <a-marker id="giallo" type="pattern" url="assets/patterns/pattern-GIALLO.patt" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
     </a-marker>
-    -->
+
+    <a-marker id="blu" type="pattern" url="assets/patterns/pattern-BLU.patt" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+    </a-marker>
+
+    <a-marker id="blu2" type="pattern" url="assets/patterns/pattern-BLU2.patt" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+    </a-marker>
+
+    <a-marker id="blu3" type="pattern" url="assets/patterns/pattern-BLU3.patt" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+    </a-marker>
+
+    <a-marker id="rosa" type="pattern" url="assets/patterns/pattern-ROSA.patt" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+    </a-marker>
+
+    <a-marker id="rosso" type="pattern" url="assets/patterns/pattern-ROSSO.patt" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+    </a-marker>
+
+    <a-marker id="arcobaleno" type="pattern" url="assets/patterns/pattern-ARCOBALENO.patt" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+    </a-marker>
 
     <!-- Camera -->
     <a-entity camera></a-entity>

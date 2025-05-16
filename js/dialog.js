@@ -220,8 +220,8 @@ window.DialogSystem = class {
             case "blu3":
                 qrDescription = "blu 3";
                 break;
-            case "rosa1":
-                qrDescription = "rosa 1";
+            case "rosa":
+                qrDescription = "rosa";
                 break;
             case "rosso":
                 qrDescription = "rosso";
