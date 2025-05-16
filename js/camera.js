@@ -1,51 +1,180 @@
-// Funzione per resettare lo zoom della fotocamera
-function resetCameraSettings() {
+// Script ottimizzato per risolvere il problema dello zoom su dispositivi mobili (Android)
+// Aggiungi questo script separato o incorporalo nel tuo index.html
+
+// Funzione migliorata per resettare lo zoom della fotocamera
+function resetCameraZoom() {
     const videoEl = document.querySelector('video');
-    if (videoEl && videoEl.srcObject) {
-        const stream = videoEl.srcObject;
-        const tracks = stream.getVideoTracks();
+    if (!videoEl || !videoEl.srcObject) {
+        console.log('Video element o srcObject non trovato');
+        return;
+    }
 
-        tracks.forEach(track => {
-            if (track.getCapabilities && track.getCapabilities().zoom) {
-                track.applyConstraints({
-                    advanced: [{zoom: 1}] // Reset zoom a 1x
-                }).catch(e => console.error('Errore nel reset dello zoom:', e));
-            }
-        });
+    const tracks = videoEl.srcObject.getVideoTracks();
+    if (!tracks || tracks.length === 0) {
+        console.log('Nessuna traccia video trovata');
+        return;
+    }
 
-        console.log('Reset zoom della fotocamera completato');
+    const track = tracks[0];
+
+    // Verifica se il browser supporta getCapabilities
+    if (!track.getCapabilities) {
+        console.log('getCapabilities non supportato');
+        return;
+    }
+
+    const capabilities = track.getCapabilities();
+    console.log('Capabilities fotocamera:', capabilities);
+
+    // Verifica se lo zoom è supportato
+    if (!capabilities.zoom) {
+        console.log('Zoom non supportato su questo dispositivo');
+        return;
+    }
+
+    // Resetta lo zoom a 1.0 (nessuno zoom)
+    console.log('Tentativo di reset dello zoom a 1.0...');
+    track.applyConstraints({
+        advanced: [{zoom: 1.0}]
+    }).then(() => {
+        console.log('Zoom resettato con successo');
+        // Verifica lo stato attuale
+        const settings = track.getSettings();
+        console.log('Impostazioni attuali fotocamera:', settings);
+    }).catch(error => {
+        console.error('Errore nel reset dello zoom:', error);
+    });
+}
+
+// Soluzione più drastica: ferma e riavvia la fotocamera
+function restartCamera() {
+    console.log('Tentativo di riavvio della fotocamera...');
+
+    // Riferimento alla scena AR
+    const scene = document.querySelector('a-scene');
+    if (!scene) {
+        console.error('Scena AR non trovata');
+        return;
+    }
+
+    // Arresta lo stream video corrente
+    const video = document.querySelector('video');
+    if (video && video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+        video.srcObject = null;
+        console.log('Stream video arrestato');
+    }
+
+    // Riavvia la scena AR
+    try {
+        // Forza il riavvio del sistema AR
+        if (scene.systems && scene.systems.arjs) {
+            scene.systems.arjs.restart();
+            console.log('Sistema AR riavviato');
+        } else {
+            console.warn('Sistema arjs non trovato nella scena');
+            // Riavvio alternativo
+            scene.pause();
+            setTimeout(() => {
+                scene.play();
+                console.log('Scena AR riavviata manualmente');
+
+                // Riavvia la fotocamera con nuove impostazioni
+                setTimeout(() => {
+                    navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: 'environment',
+                            width: { ideal: 640 },
+                            height: { ideal: 480 },
+                            zoom: 1.0
+                        }
+                    }).then(stream => {
+                        const newVideo = document.querySelector('video');
+                        if (newVideo) {
+                            newVideo.srcObject = stream;
+                            console.log('Fotocamera riavviata con nuove impostazioni');
+                        }
+                    }).catch(err => {
+                        console.error('Errore nel riavvio della fotocamera:', err);
+                    });
+                }, 500);
+            }, 500);
+        }
+    } catch (error) {
+        console.error('Errore durante il riavvio della scena AR:', error);
     }
 }
 
-// Aggiungi un pulsante per il reset manuale dello zoom
-function addResetButton() {
-    const resetButton = document.createElement('button');
-    resetButton.textContent = '🔄 Reset Camera';
-    resetButton.style.position = 'fixed';
-    resetButton.style.top = '80px'; // Posizionato sotto il pulsante audio
-    resetButton.style.right = '20px';
-    resetButton.style.padding = '8px';
-    resetButton.style.backgroundColor = 'rgba(0,0,0,0.7)';
-    resetButton.style.color = 'white';
-    resetButton.style.border = 'none';
-    resetButton.style.borderRadius = '5px';
-    resetButton.style.zIndex = '9999';
-    resetButton.addEventListener('click', resetCameraSettings);
-    document.body.appendChild(resetButton);
+// Aggiunge pulsanti UI per le funzioni di reset fotocamera
+function addCameraControls() {
+    // Contenitore per i controlli della fotocamera
+    const controlsContainer = document.createElement('div');
+    controlsContainer.style.position = 'fixed';
+    controlsContainer.style.top = '140px'; // Sotto gli altri controlli
+    controlsContainer.style.right = '20px';
+    controlsContainer.style.display = 'flex';
+    controlsContainer.style.flexDirection = 'column';
+    controlsContainer.style.gap = '10px';
+    controlsContainer.style.zIndex = '9999';
+
+    // Pulsante Reset Zoom
+    const resetZoomBtn = document.createElement('button');
+    resetZoomBtn.textContent = '🔍 Reset Zoom';
+    resetZoomBtn.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    resetZoomBtn.style.color = 'white';
+    resetZoomBtn.style.border = 'none';
+    resetZoomBtn.style.borderRadius = '5px';
+    resetZoomBtn.style.padding = '8px 12px';
+    resetZoomBtn.addEventListener('click', resetCameraZoom);
+
+    // Pulsante Riavvia Fotocamera (soluzione più drastica)
+    const restartCamBtn = document.createElement('button');
+    restartCamBtn.textContent = '📸 Riavvia Fotocamera';
+    restartCamBtn.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    restartCamBtn.style.color = 'white';
+    restartCamBtn.style.border = 'none';
+    restartCamBtn.style.borderRadius = '5px';
+    restartCamBtn.style.padding = '8px 12px';
+    restartCamBtn.addEventListener('click', restartCamera);
+
+    // Aggiungi pulsanti al contenitore
+    controlsContainer.appendChild(resetZoomBtn);
+    controlsContainer.appendChild(restartCamBtn);
+
+    // Aggiungi contenitore al documento
+    document.body.appendChild(controlsContainer);
 }
 
-// Reset zoom all'avvio e quando l'utente torna alla pagina
+// Inizializzazione - esegui quando il DOM è caricato
 document.addEventListener('DOMContentLoaded', function() {
-    // Reset zoom dopo che la fotocamera è stata inizializzata
-    setTimeout(resetCameraSettings, 2000);
+    // Aggiungi i controlli della fotocamera
+    addCameraControls();
 
-    // Aggiungi pulsante di reset
-    addResetButton();
+    // Reset automatico dello zoom dopo il caricamento
+    setTimeout(resetCameraZoom, 2000);
 
-    // Reset zoom quando l'utente torna alla pagina
+    // Reset automatico quando l'utente ritorna alla pagina
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
-            setTimeout(resetCameraSettings, 1000);
+            setTimeout(resetCameraZoom, 1000);
         }
     });
+
+    // Controlla lo zoom ogni 10 secondi
+    setInterval(() => {
+        const video = document.querySelector('video');
+        if (video && video.srcObject) {
+            const track = video.srcObject.getVideoTracks()[0];
+            if (track && track.getSettings) {
+                const settings = track.getSettings();
+                console.log('Controllo zoom:', settings.zoom);
+                // Se lo zoom è maggiore di 1.1, resettalo
+                if (settings.zoom && settings.zoom > 1.1) {
+                    console.log('Zoom troppo alto, reset...');
+                    resetCameraZoom();
+                }
+            }
+        }
+    }, 10000);
 });
