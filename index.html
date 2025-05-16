@@ -54,8 +54,8 @@
 <!-- Scena AR -->
 <a-scene
         embedded
-        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix;"
-        renderer="antialias: true; alpha: true"
+        arjs="sourceType: webcam; debugUIEnabled: true; detectionMode: full; matrixCodeType: 3x3;"
+        renderer="antialias: true; alpha: true; precision: mediump;"
         vr-mode-ui="enabled: false"
         loading-screen="enabled: false">
 
@@ -117,5 +117,33 @@
 <!-- JavaScript -->
 <script src="js/dialog.js"></script>
 <script src="js/main.js"></script>
+<script src="js/camera.js"></script>
+
+<div id="debug-info" style="position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 10px; font-family: monospace; z-index: 9999; max-width: 50%;">
+    Debug: Nessun marker rilevato
+</div>
+
+<script>
+    // Script per mostrare informazioni di debug
+    document.addEventListener('DOMContentLoaded', function() {
+        const debugInfo = document.getElementById('debug-info');
+        const markers = document.querySelectorAll('a-marker');
+
+        markers.forEach(marker => {
+            marker.addEventListener('markerFound', () => {
+                debugInfo.textContent = `Debug: Marker "${marker.id}" trovato!`;
+                debugInfo.style.backgroundColor = 'rgba(0,255,0,0.7)';
+                setTimeout(() => {
+                    debugInfo.style.backgroundColor = 'rgba(0,0,0,0.7)';
+                }, 2000);
+            });
+
+            marker.addEventListener('markerLost', () => {
+                debugInfo.textContent = 'Debug: Marker perso';
+            });
+        });
+    });
+</script>
+
 </body>
 </html>
