@@ -6,10 +6,29 @@
     <title>Esperienza AR con QR Code - Mondo degli Spiritelli</title>
 
     <!-- A-Frame -->
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
 
-    <!-- AR.js con supporto per QR code -->
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <!-- AR.js - Versione specifica con miglior supporto per i QR code -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/3.3.3/aframe/build/aframe-ar-nft.js"></script>
+
+    <!-- Libreria aggiuntiva per il riconoscimento dei barcode -->
+    <script>
+        // Assicura che il rilevamento dei barcode sia attivato all'avvio
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                // Forza l'attivazione del rilevamento dei barcode
+                const arSystem = document.querySelector('a-scene').systems.arjs;
+                if (arSystem && arSystem._arController) {
+                    console.log("Abilito forzatamente il rilevamento dei barcode");
+                    arSystem._arController.addEventListener('getMarker', (event) => {
+                        if (event.data.type === 'barcode') {
+                            console.log("Trovato barcode con valore:", event.data.marker.id);
+                        }
+                    });
+                }
+            }, 2000);
+        });
+    </script>
 
     <!-- Mixer per animazioni GLTF -->
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
@@ -51,10 +70,10 @@
     </button>
 </div>
 
-<!-- Scena AR -->
+<!-- Scena AR - Configurazione ottimizzata per QR code -->
 <a-scene
         embedded
-        arjs="sourceType: webcam; debugUIEnabled: true; detectionMode: mono_and_matrix; matrixCodeType: 3x3; codeBarMarkerDetection: true;"
+        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true; detectionMode: mono_and_matrix; matrixCodeType: 3x3; codeBarMarkerDetection: true;"
         renderer="antialias: true; alpha: true; precision: mediump;"
         vr-mode-ui="enabled: false"
         loading-screen="enabled: false">
@@ -70,7 +89,7 @@
     <!-- Entità audio che riproduce la musica di sottofondo -->
     <a-entity sound="src: #background-music; autoplay: true; loop: true; volume: 0.5"></a-entity>
 
-    <!-- QR Code Brochure - Introduzione -->
+    <!-- QR Code Brochure - Introduzione (usando il tipo barcode) -->
     <a-marker id="brochure" type="barcode" value="0" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
         <!-- Il modello 3D verrà inserito dinamicamente tramite JavaScript -->
     </a-marker>
@@ -110,25 +129,64 @@
         <!-- Il modello 3D verrà inserito dinamicamente tramite JavaScript -->
     </a-marker>
 
+    <!-- In alternativa, prova con i marker pattern predefiniti per verificare che l'applicazione funzioni -->
+    <a-marker id="testHiro" preset="hiro">
+        <!-- Un marker di test -->
+    </a-marker>
+
     <!-- Camera -->
     <a-entity camera></a-entity>
 </a-scene>
 
-<!-- JavaScript -->
-<script src="js/dialog.js"></script>
-<script src="js/main.js"></script>
-<script src="js/camera.js"></script>
-
+<!-- Debug info -->
 <div id="debug-info" style="position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 10px; font-family: monospace; z-index: 9999; max-width: 50%;">
     Debug: Nessun marker rilevato
 </div>
 
+<!-- JavaScript per correggere il problema dello zoom -->
 <script>
+    // Funzione per resettare lo zoom della fotocamera
+    function resetCameraSettings() {
+        const videoEl = document.querySelector('video');
+        if (videoEl && videoEl.srcObject) {
+            const stream = videoEl.srcObject;
+            const tracks = stream.getVideoTracks();
+
+            tracks.forEach(track => {
+                if (track.getCapabilities && track.getCapabilities().zoom) {
+                    track.applyConstraints({
+                        advanced: [{zoom: 1}] // Reset zoom a 1x
+                    }).catch(e => console.error('Errore nel reset dello zoom:', e));
+                }
+            });
+
+            console.log('Reset zoom della fotocamera completato');
+        }
+    }
+
+    // Aggiungi un pulsante per il reset manuale dello zoom
+    function addResetButton() {
+        const resetButton = document.createElement('button');
+        resetButton.textContent = '🔄 Reset Camera';
+        resetButton.style.position = 'fixed';
+        resetButton.style.top = '80px'; // Posizionato sotto il pulsante audio
+        resetButton.style.right = '20px';
+        resetButton.style.padding = '8px';
+        resetButton.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        resetButton.style.color = 'white';
+        resetButton.style.border = 'none';
+        resetButton.style.borderRadius = '5px';
+        resetButton.style.zIndex = '9999';
+        resetButton.addEventListener('click', resetCameraSettings);
+        document.body.appendChild(resetButton);
+    }
+
     // Script per mostrare informazioni di debug
     document.addEventListener('DOMContentLoaded', function() {
         const debugInfo = document.getElementById('debug-info');
         const markers = document.querySelectorAll('a-marker');
 
+        // Aggiungi event listener per i marker
         markers.forEach(marker => {
             marker.addEventListener('markerFound', () => {
                 debugInfo.textContent = `Debug: Marker "${marker.id}" trovato!`;
@@ -142,8 +200,61 @@
                 debugInfo.textContent = 'Debug: Marker perso';
             });
         });
+
+        // Aggiungi pulsante reset e reset zoom iniziale
+        addResetButton();
+        setTimeout(resetCameraSettings, 2000);
+
+        // Reset zoom quando l'utente torna alla pagina
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                setTimeout(resetCameraSettings, 1000);
+            }
+        });
+
+        // Gestione pulsante audio
+        const toggleAudioBtn = document.getElementById('toggleAudio');
+        const audioIcon = document.getElementById('audioIcon');
+        let isAudioPlaying = true;
+
+        if (toggleAudioBtn && audioIcon) {
+            toggleAudioBtn.addEventListener('click', function() {
+                const audioEntity = document.querySelector('a-entity[sound]');
+                if (audioEntity) {
+                    if (isAudioPlaying) {
+                        // Disattiva l'audio
+                        audioEntity.setAttribute('sound', 'volume', 0);
+                        audioIcon.textContent = '🔇';
+                    } else {
+                        // Attiva l'audio
+                        audioEntity.setAttribute('sound', 'volume', 0.5);
+                        audioIcon.textContent = '🔊';
+                    }
+                    isAudioPlaying = !isAudioPlaying;
+                }
+            });
+        }
+
+        // Gestione overlay iniziale
+        const startOverlay = document.getElementById('start-overlay');
+        const startButton = document.getElementById('startExperience');
+
+        if (startButton && startOverlay) {
+            startButton.addEventListener('click', function() {
+                startOverlay.style.display = 'none';
+
+                // Avvia l'audio
+                const audioEntity = document.querySelector('a-entity[sound]');
+                if (audioEntity) {
+                    audioEntity.setAttribute('sound', 'volume', 0.5);
+                }
+            });
+        }
     });
 </script>
 
+<!-- JavaScript originali dell'applicazione -->
+<script src="js/dialog.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
