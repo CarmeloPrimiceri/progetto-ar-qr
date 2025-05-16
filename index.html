@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Esperienza AR con MindAR</title>
+    <title>Esperienza AR con QR Code - Mondo degli Spiritelli</title>
 
     <!-- A-Frame -->
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
 
-    <!-- MindAR -->
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.0/dist/mindar-image-aframe.prod.js"></script>
+    <!-- AR.js con supporto per QR code -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
     <!-- Mixer per animazioni GLTF -->
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
@@ -18,6 +18,15 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<!-- Overlay iniziale per avviare l'esperienza e l'audio -->
+<div id="start-overlay" class="start-overlay">
+    <div class="start-container">
+        <h2>Il Mondo degli Spiritelli</h2>
+        <p>Un'avventura in Realtà Aumentata</p>
+        <button id="startExperience" class="start-btn">Inizia Esperienza</button>
+    </div>
+</div>
+
 <!-- Schermata di caricamento -->
 <div class="loading-screen">
     <div class="spinner"></div>
@@ -26,7 +35,7 @@
 
 <!-- Istruzioni -->
 <div class="instructions">
-    Punta la fotocamera verso l'immagine target per far apparire un personaggio 3D
+    Punta la fotocamera verso un QR code per iniziare l'avventura nel mondo degli spiritelli!
 </div>
 
 <!-- Container per il dialogo -->
@@ -35,39 +44,74 @@
     <div class="choices-container"></div>
 </div>
 
+<!-- Controlli audio -->
+<div class="audio-controls">
+    <button id="toggleAudio" class="audio-btn">
+        <span id="audioIcon">🔊</span>
+    </button>
+</div>
+
 <!-- Scena AR -->
 <a-scene
-        mindar-image="imageTargetSrc: assets/targets/markers.mind;"
-        color-space="sRGB"
-        renderer="colorManagement: true; physicallyCorrectLights"
+        embedded
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix;"
+        renderer="antialias: true; alpha: true"
         vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false">
+        loading-screen="enabled: false">
 
     <a-assets>
-        <a-asset-item id="fiorellino-model" src="assets/models/Fiorellino.glb"></a-asset-item>
+        <!-- Modelli 3D per i diversi spiritelli -->
+        <a-asset-item id="spiritello-model" src="assets/models/Fiorellino.glb"></a-asset-item>
+
+        <!-- Audio di sottofondo -->
+        <audio id="background-music" src="assets/audio/background-music.mp3" preload="auto" loop></audio>
     </a-assets>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <!-- Entità audio che riproduce la musica di sottofondo -->
+    <a-entity sound="src: #background-music; autoplay: true; loop: true; volume: 0.5"></a-entity>
 
-    <!-- Target 0 -->
-    <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity
-                gltf-model="#fiorellino-model"
-                position="0 0.75 0"
-                scale="1.5 1.5 1.5"
-                rotation="0 0 0">
-        </a-entity>
-    </a-entity>
+    <!-- QR Code Brochure - Introduzione -->
+    <a-marker id="brochure" type="barcode" value="0" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+        <!-- Il modello 3D verrà inserito dinamicamente tramite JavaScript -->
+    </a-marker>
 
-    <!-- Target 1 -->
-    <a-entity mindar-image-target="targetIndex: 1">
-        <a-entity
-                gltf-model="#fiorellino-model"
-                position="0 0.75 0"
-                scale="1.5 1.5 1.5"
-                rotation="0 0 0">
-        </a-entity>
-    </a-entity>
+    <!-- QR Code Giallo - Spiritello con i pacchi -->
+    <a-marker id="giallo" type="barcode" value="1" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+        <!-- Il modello 3D verrà inserito dinamicamente tramite JavaScript -->
+    </a-marker>
+
+    <!-- QR Code Blu - Spiritello dell'acqua -->
+    <a-marker id="blu" type="barcode" value="2" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+        <!-- Il modello 3D verrà inserito dinamicamente tramite JavaScript -->
+    </a-marker>
+
+    <!-- QR Code Blu 2 - Continuazione tubo -->
+    <a-marker id="blu2" type="barcode" value="3" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+        <!-- Il modello 3D verrà inserito dinamicamente tramite JavaScript -->
+    </a-marker>
+
+    <!-- QR Code Blu 3 - Tubo chiuso -->
+    <a-marker id="blu3" type="barcode" value="4" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+        <!-- Il modello 3D verrà inserito dinamicamente tramite JavaScript -->
+    </a-marker>
+
+    <!-- QR Code Rosa - Spiritello dei fiori -->
+    <a-marker id="rosa1" type="barcode" value="5" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+        <!-- Il modello 3D verrà inserito dinamicamente tramite JavaScript -->
+    </a-marker>
+
+    <!-- QR Code Rosso - Spiritello cattivo -->
+    <a-marker id="rosso" type="barcode" value="6" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+        <!-- Il modello 3D verrà inserito dinamicamente tramite JavaScript -->
+    </a-marker>
+
+    <!-- QR Code Arcobaleno - Finale -->
+    <a-marker id="arcobaleno" type="barcode" value="7" raycaster="objects: .clickable" emitevents="true" cursor="fuse: false; rayOrigin: mouse;">
+        <!-- Il modello 3D verrà inserito dinamicamente tramite JavaScript -->
+    </a-marker>
+
+    <!-- Camera -->
+    <a-entity camera></a-entity>
 </a-scene>
 
 <!-- JavaScript -->
