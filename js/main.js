@@ -65,7 +65,7 @@ window.characterData = {
         ]
     },
     "blu2": { // QR code blu 2 - continuazione tubo
-        modelId: "spiritello-blu2",
+        modelId: "spiritello-blu",
         position: "0 0.75 0",
         scale: "1.5 1.5 1.5",
         rotation: "0 0 0",
@@ -77,7 +77,7 @@ window.characterData = {
         ]
     },
     "blu3": { // QR code blu 3 - tubo chiuso
-        modelId: "spiritello-blu3",
+        modelId: "spiritello-blu",
         position: "0 0.75 0",
         scale: "1.5 1.5 1.5",
         rotation: "0 0 0",
