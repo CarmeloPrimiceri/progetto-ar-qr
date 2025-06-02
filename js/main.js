@@ -4,7 +4,7 @@ window.characterData = {
         modelId: "spiritello-inizio",
         position: "0 0 0.5",
         scale: "0.5 0.5 0.5",
-        rotation: "90 90 180",
+        rotation: "0 0 180",
         animation: "idle",
         character: "spiritello-inizio",
         dialog: "Sei arrivato, giovane avventuriero. Il mondo fantastico ha bisogno del tuo aiuto...un'entità cattiva sta facendo dispetti! Gli abitanti non sono per niente felici...",
