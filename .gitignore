@@ -53,7 +53,6 @@ npm-debug.log
 *.tsbuildinfo
 
 # Optional npm cache directory
-.npm
 
 # Optional eslint cache
 .eslintcache
@@ -118,11 +117,9 @@ temp/
 
 # Build directories
 build/
-dist/
 out/
 
 # Cache directories
-.cache/
 .temp/
 
 # Local development
@@ -161,20 +158,13 @@ local/
 docs/_build/
 
 # PyCharm
-.idea/
 
 # JetBrains IDEs
-.idea/
-*.iml
-out/
 
 # Eclipse
 .project
 .metadata
 bin/
-tmp/
-*.tmp
-*.bak
 *.swp
 *~.nib
 local.properties
@@ -186,7 +176,6 @@ local.properties
 .vs/
 *.user
 *.userosscache
-*.suo
 *.userprefs
 *.vspscc
 *.vssscc
