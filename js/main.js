@@ -3,8 +3,8 @@ window.characterData = {
     "inizio": { // QR code iniziale della brochure
         modelId: "spiritello-inizio",
         position: "0 0 0.5",
-        scale: "1.5 1.5 1.5",
-        rotation: "0 180 0",
+        scale: "0.5 0.5 0.5",
+        rotation: "0 90 0",
         animation: "idle",
         character: "spiritello-inizio",
         dialog: "Sei arrivato, giovane avventuriero. Il mondo fantastico ha bisogno del tuo aiuto...un'entità cattiva sta facendo dispetti! Gli abitanti non sono per niente felici...",
