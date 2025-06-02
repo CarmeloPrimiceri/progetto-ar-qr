@@ -1,5 +1,172 @@
-// Il characterData rimane identico al tuo originale
-// (copialo dal tuo file main.js originale)
+// Database dei personaggi e dei dialoghi
+window.characterData = {
+    "inizio": { // QR code iniziale della brochure
+        modelId: "spiritello-inizio",
+        position: "0 0.75 0",
+        scale: "1.5 1.5 1.5",
+        rotation: "0 0 0",
+        animation: "idle",
+        character: "spiritello-inizio",
+        dialog: "Sei arrivato, giovane avventuriero. Il mondo fantastico ha bisogno del tuo aiuto...un'entità cattiva sta facendo dispetti! Gli abitanti non sono per niente felici...",
+        choices: [
+            { text: "Come posso aiutare?", nextStep: true },
+            { text: "Che dovrei fare?", nextStep: true }
+        ],
+        nextDialog: "Ho sentito che uno spiritello sta lasciando pacchi in giro...e un altro sta raccogliendo acqua da un tubo che perde. Da chi vuoi andare prima?",
+        nextChoices: [
+            { text: "Pacchi (marker giallo)", nextMarker: "giallo" },
+            { text: "Tubo (marker blu)", nextMarker: "blu" }
+        ]
+    },
+    "giallo": { // QR code giallo - spiritello con i pacchi
+        modelId: "spiritello-giallo",
+        position: "0 0.75 0",
+        scale: "1.5 1.5 1.5",
+        rotation: "0 0 0",
+        animation: "dropping",
+        character: "spiritello-giallo",
+        description: "Il personaggio entra in scena con i pacchi che gli cadono.",
+        dialog: "Hey aspetta! I tuoi pacchi...!",
+        choices: [
+            { text: "Hey aspetta!", nextStep: true },
+            { text: "I tuoi pacchi...!", nextStep: true }
+        ],
+        nextDialog: "Mh? I miei pacchi...? I miei pacchi! Qualcuno mi ha aperto lo zaino...",
+        nextChoices: [
+            { text: "Vuoi una mano?", nextStep: true },
+            { text: "Te li raccolgo io!", nextStep: true }
+        ],
+        finalDialog: "davvero? Grazie, mi hai salvato...",
+        finalChoices: [
+            { text: "Tocchi lo spiritello per ridargli i pacchi", nextStep: true }
+        ],
+        conclusion: "Grazie davvero...credo che qualcun altro abbia bisogno del tuo aiuto!",
+        conclusionChoices: [
+            { text: "Vai al marker blu", nextMarker: "blu", condition: "firstChoice" },
+            { text: "Vai al marker rosa", nextMarker: "rosa", condition: "notFirstChoice" }
+        ]
+    },
+    "blu": { // QR code blu - spiritello con l'acqua
+        modelId: "spiritello-blu",
+        position: "0 0.75 0",
+        scale: "1.5 1.5 1.5",
+        rotation: "0 0 0",
+        animation: "running",
+        character: "spiritello-blu",
+        description: "Spiritello che entra correndo in scena con tanta acqua in un pancione.",
+        dialog: "Scusa, hai bisogno di aiuto?",
+        choices: [
+            { text: "Scusa, hai bisogno di aiuto?", nextStep: true },
+            { text: "Dove corri?", nextStep: true }
+        ],
+        nextDialog: "Lo spiritello sembra andare troppo di fretta, ma ti indica una direzione.",
+        nextChoices: [
+            { text: "Vai al tubo che perde (Vai al marker blu 2)", nextMarker: "blu2" }
+        ]
+    },
+    "blu2": { // QR code blu 2 - continuazione tubo
+        modelId: "spiritello-blu2",
+        position: "0 0.75 0",
+        scale: "1.5 1.5 1.5",
+        rotation: "0 0 0",
+        animation: "fixing",
+        character: "spiritello-blu",
+        dialog: "Chiudi il tubo.",
+        choices: [
+            { text: "Chiudi il tubo (Vai al marker blu 3)", nextMarker: "blu3" }
+        ]
+    },
+    "blu3": { // QR code blu 3 - tubo chiuso
+        modelId: "spiritello-blu3",
+        position: "0 0.75 0",
+        scale: "1.5 1.5 1.5",
+        rotation: "0 0 0",
+        animation: "relieved",
+        character: "spiritello-blu",
+        description: "Lo spiritello ora ha la pancia meno piena.",
+        dialog: "giovane avventuriero mi hai salvato! Non riuscivo a guardare tutta quell'acqua che veniva sprecata...ricordati sempre di chiudere i rubinetti!",
+        choices: [
+            { text: "Lo farò", nextStep: true },
+            { text: "Farò più attenzione in futuro", nextStep: true }
+        ],
+        nextDialog: "che bello, noi spiritelli ti ringraziamo. Forse c'è ancora qualcuno che devi aiutare...perché non vai a dare un'occhiata?",
+        nextChoices: [
+            { text: "Vai al marker giallo", nextMarker: "giallo", condition: "notFirstChoice" },
+            { text: "Vai al marker rosa", nextMarker: "rosa", condition: "firstChoice" }
+        ]
+    },
+    "rosa": { // QR code rosa 1
+        modelId: "spiritello-rosa",
+        position: "0 0.75 0",
+        scale: "1.5 1.5 1.5",
+        rotation: "0 0 0",
+        animation: "walking",
+        character: "spiritello-rosa",
+        description: "Spiritello rosa stava camminando quando all'improvviso passa rotolando lo spiritello cattivo sopra i fiori.",
+        dialog: "oh no! I miei fiori...",
+        choices: [
+            { text: "Oh non essere triste", nextStep: true },
+            { text: "Ora ci vado a parlare io!", nextStep: true }
+        ],
+        nextDialog: "mhm...",
+        nextChoices: [
+            { text: "Segui i Qr code rossi", nextMarker: "rosso" }
+        ]
+    },
+    "rosso": { // QR code rosso - spiritello cattivo
+        modelId: "spiritello-rosso",
+        position: "0 0.75 0",
+        scale: "1.5 1.5 1.5",
+        rotation: "0 0 0",
+        animation: "angry",
+        character: "spiritello-rosso",
+        description: "Metti all'angolo lo spiritello cattivo.",
+        dialog: "Perché sei cattivo?",
+        choices: [
+            { text: "Perché sei cattivo?", nextStep: true },
+            { text: "Smetti di fare dispetti!", nextStep: true }
+        ],
+        nextDialog: "Perché dovrei? Loro sono stati cattivi con me!",
+        nextChoices: [
+            { text: "Cattivi?", nextStep: true },
+            { text: "Che intendi dire?", nextStep: true }
+        ],
+        finalDialog: "mi hanno lasciato nell'area arida del bosco! Per colpa del cambiamento climatico sono stato davvero male!",
+        finalChoices: [
+            { text: "Gliel'hai detto?", nextStep: true }
+        ],
+        conclusion: "no però...",
+        conclusionChoices: [
+            { text: "Lo prendi e lo porti al Qrcode arcobaleno vicino l'entrata", nextMarker: "arcobaleno" }
+        ]
+    },
+    "arcobaleno": { // QR code arcobaleno - finale
+        modelId: "spiritello-arcobaleno",
+        position: "0 0.75 0",
+        scale: "1.5 1.5 1.5",
+        rotation: "0 0 0",
+        animation: "gathering",
+        character: "spiritello-arcobaleno",
+        description: "Compaiono tutti gli spiritelli.",
+        dialog: "Quindi eri tu a fare i dispetti?",
+        choices: [
+            { text: "Ascoltate la storia", nextStep: true }
+        ],
+        dialogs: [
+            { character: "spiritello-rosso", text: "sì! Perché mi avete abbandonato!" },
+            { character: "spiritello-verde", text: "ci dispiace che non abbiamo notato il tuo malessere...ma ora siamo qui, pronti ad aiutare te e la natura." },
+            { character: "spiritello-blu", text: "tutto grazie al giovane avventuriero che, aiutandoci, ci ha fatto aprire gli occhi!" },
+            { character: "spiritello-rosso", text: "mi dispiace...avrei dovuto parlare invece di pianificare una stupida vendetta..." },
+            { character: "spiritello-rosa", text: "Ti perdoniamo! (ridiventa felice, sia lui sia quello rosso)" },
+            { character: "spiritello-celeste", text: "ora però, giovane avventuriero, ci devi promettere una cosa. Come tu hai aiutato il nostro mondo, tu devi aiutare il tuo." },
+            { character: "spiritello-viola", text: "Come hai visto, l'inquinamento e il cambiamento climatico cambiano le cose per il peggio!" }
+        ],
+        finalChoices: [
+            { text: "Prometto che farò la mia parte!", nextStep: true }
+        ],
+        conclusion: "Spiritello viola: ora però, goditi la tua meritata ricompensa! Inquadra il Qr code sulla facciata e guarda il nostro mondo prendere vita!"
+    }
+};
 
 // Sistema di gestione dei marker QR e dei modelli 3D
 class ARExperience {

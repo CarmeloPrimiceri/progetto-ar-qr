@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Esperienza AR - Mondo degli Spiritelli - DEBUG</title>
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+
+    <!-- AR.js -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+    <!-- Mixer per animazioni -->
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: #0f0;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 9999;
+            max-width: 300px;
+        }
+
+        .debug-panel div {
+            margin: 5px 0;
+        }
+
+        .start-btn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            font-size: 20px;
+            background: #5ce1e6;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            z-index: 10000;
+        }
+
+        #arScene {
+            display: none;
+        }
+
+        .test-marker {
+            background: yellow;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<button id="startBtn" class="start-btn">Inizia Test AR</button>
+
+<div class="debug-panel" id="debugPanel" style="display: none;">
+    <div>DEBUG MODE</div>
+    <div id="cameraStatus">Camera: Waiting...</div>
+    <div id="arjsStatus">AR.js: Loading...</div>
+    <div id="markerStatus">Marker: None</div>
+    <div id="detectionMode">Mode: -</div>
+    <hr>
+    <div>Test Marker Virtuale:</div>
+    <button class="test-marker" onclick="simulateMarker(0)">Test QR 0</button>
+    <button class="test-marker" onclick="simulateMarker(1)">Test QR 1</button>
+</div>
+
+<!-- Scena AR semplificata -->
+<a-scene
+        id="arScene"
+        embedded
+        arjs="sourceType: webcam;
+              debugUIEnabled: true;
+              detectionMode: mono_and_matrix;
+              matrixCodeType: 3x3;
+              trackingMethod: best;"
+        vr-mode-ui="enabled: false">
+
+    <a-assets>
+        <!-- Usa un modello di test prima -->
+        <a-asset-item id="test-model" src="assets/models/Fiorellino.glb"></a-asset-item>
+    </a-assets>
+
+    <!-- Test con marker Hiro prima -->
+    <a-marker preset="hiro" id="marker-hiro">
+        <a-box position="0 0.5 0" material="color: red;" scale="0.5 0.5 0.5">
+            <a-animation attribute="rotation" to="0 360 0" dur="3000" repeat="indefinite"></a-animation>
+        </a-box>
+        <a-text value="HIRO WORKS!" position="0 1.5 0" color="yellow" align="center"></a-text>
+    </a-marker>
+
+    <!-- Marker Barcode/Matrix per QR -->
+    <a-marker type="barcode" value="0" id="marker-0">
+        <a-box position="0 0.5 0" material="color: blue;" scale="0.5 0.5 0.5">
+            <a-animation attribute="rotation" to="0 360 0" dur="3000" repeat="indefinite"></a-animation>
+        </a-box>
+        <a-text value="QR 0 - INIZIO" position="0 1.5 0" color="white" align="center"></a-text>
+    </a-marker>
+
+    <a-marker type="barcode" value="1" id="marker-1">
+        <a-box position="0 0.5 0" material="color: yellow;" scale="0.5 0.5 0.5">
+            <a-animation attribute="rotation" to="0 360 0" dur="3000" repeat="indefinite"></a-animation>
+        </a-box>
+        <a-text value="QR 1 - GIALLO" position="0 1.5 0" color="black" align="center"></a-text>
+    </a-marker>
+
+    <!-- Test anche con pattern matrix -->
+    <a-marker type="matrix" value="0" id="marker-matrix-0">
+        <a-sphere position="0 0.5 0" material="color: green;" scale="0.3 0.3 0.3"></a-sphere>
+        <a-text value="Matrix 0" position="0 1 0" color="white" align="center"></a-text>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+</a-scene>
+
+<script>
+    let debugPanel, cameraStatus, arjsStatus, markerStatus, detectionMode;
+
+    document.getElementById('startBtn').onclick = function() {
+        this.style.display = 'none';
+        document.getElementById('arScene').style.display = 'block';
+        document.getElementById('debugPanel').style.display = 'block';
+        initDebug();
+    };
+
+    function initDebug() {
+        debugPanel = document.getElementById('debugPanel');
+        cameraStatus = document.getElementById('cameraStatus');
+        arjsStatus = document.getElementById('arjsStatus');
+        markerStatus = document.getElementById('markerStatus');
+        detectionMode = document.getElementById('detectionMode');
+
+        // Monitora lo stato della camera
+        const scene = document.querySelector('a-scene');
+
+        scene.addEventListener('camera-init', () => {
+            cameraStatus.textContent = 'Camera: INITIALIZED ✓';
+            cameraStatus.style.color = '#0f0';
+        });
+
+        scene.addEventListener('camera-error', (e) => {
+            cameraStatus.textContent = 'Camera: ERROR - ' + e.detail.error;
+            cameraStatus.style.color = '#f00';
+        });
+
+        // Verifica AR.js
+        if (window.ARjs) {
+            arjsStatus.textContent = 'AR.js: LOADED ✓';
+            arjsStatus.style.color = '#0f0';
+        }
+
+        // Monitora i marker
+        setupMarkerListeners();
+
+        // Info sulla detection mode
+        setTimeout(() => {
+            const arSystem = scene.systems['arjs'];
+            if (arSystem) {
+                detectionMode.textContent = 'Mode: ' + (arSystem.data.detectionMode || 'unknown');
+            }
+        }, 2000);
+    }
+
+    function setupMarkerListeners() {
+        // Test Hiro marker
+        const hiroMarker = document.querySelector('#marker-hiro');
+        hiroMarker.addEventListener('markerFound', () => {
+            console.log('HIRO marker found!');
+            markerStatus.textContent = 'Marker: HIRO FOUND! ✓';
+            markerStatus.style.color = '#0f0';
+        });
+
+        hiroMarker.addEventListener('markerLost', () => {
+            console.log('HIRO marker lost');
+            markerStatus.textContent = 'Marker: HIRO lost';
+            markerStatus.style.color = '#ff0';
+        });
+
+        // Test QR markers
+        for (let i = 0; i <= 1; i++) {
+            const marker = document.querySelector(`#marker-${i}`);
+            if (marker) {
+                marker.addEventListener('markerFound', () => {
+                    console.log(`QR ${i} found!`);
+                    markerStatus.textContent = `Marker: QR ${i} FOUND! ✓`;
+                    markerStatus.style.color = '#0f0';
+                });
+
+                marker.addEventListener('markerLost', () => {
+                    console.log(`QR ${i} lost`);
+                    markerStatus.textContent = `Marker: QR ${i} lost`;
+                    markerStatus.style.color = '#ff0';
+                });
+            }
+
+            // Test matrix markers
+            const matrixMarker = document.querySelector(`#marker-matrix-${i}`);
+            if (matrixMarker) {
+                matrixMarker.addEventListener('markerFound', () => {
+                    console.log(`Matrix ${i} found!`);
+                    markerStatus.textContent = `Marker: Matrix ${i} FOUND! ✓`;
+                    markerStatus.style.color = '#0f0';
+                });
+            }
+        }
+    }
+
+    // Simula marker per test
+    function simulateMarker(id) {
+        markerStatus.textContent = `Marker: QR ${id} (SIMULATED)`;
+        markerStatus.style.color = '#0ff';
+        alert(`Simulazione QR ${id} - In produzione questo mostrerebbe lo spiritello`);
+    }
+
+    // Log dettagliato
+    console.log('AR.js Debug Mode Initialized');
+    console.log('Supported:', navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+</script>
+</body>
+</html>
