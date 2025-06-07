@@ -140,7 +140,7 @@ window.characterData = {
             { text: "Lo prendi e lo porti al Qrcode arcobaleno vicino l'entrata", nextMarker: "arcobaleno" }
         ]
     },
-    "arcobaleno": { // QR code arcobaleno - finale
+    "finale": { // QR code arcobaleno - finale
         modelId: "spiritello-inizio",
         position: "0 0 0.5",
         scale: "1.5 1.5 1.5",
