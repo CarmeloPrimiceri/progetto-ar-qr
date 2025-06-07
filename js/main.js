@@ -141,12 +141,12 @@ window.characterData = {
         ]
     },
     "arcobaleno": { // QR code arcobaleno - finale
-        modelId: "spiritello-arcobaleno",
+        modelId: "spiritello-inizio",
         position: "0 0 0.5",
         scale: "1.5 1.5 1.5",
         rotation: "270 0 0",
         animation: "idle",
-        character: "spiritello-arcobaleno",
+        character: "spiritello-inizio",
         description: "Compaiono tutti gli spiritelli.",
         dialog: "Quindi eri tu a fare i dispetti?",
         choices: [
@@ -268,48 +268,14 @@ class ARExperience {
         });
 
         // Aggiungi animation-mixer se specificato
-        if (data.animation) {
-            modelEntity.setAttribute('animation-mixer', `clip: ${data.animation}; loop: repeat`);
-        }
+        //if (data.animation) {
+        //    modelEntity.setAttribute('animation-mixer', `clip: ${data.animation}; loop: repeat`);
+        //}
 
-        // Gestione speciale per il finale con più personaggi
-        if (characterId === "arcobaleno") {
-            this.loadGroupModels(marker);
-        } else {
-            marker.appendChild(modelEntity);
-        }
+        marker.appendChild(modelEntity);
 
         this.loadedModels[characterId] = true;
         console.log(`Modello caricato per ${characterId}`);
-    }
-
-    loadGroupModels(marker) {
-        // Per il finale, posiziona più spiritelli
-        const positions = [
-            { pos: "-0.3 0 0", scale: "0.3 0.3 0.3" },
-            { pos: "0.3 0 0", scale: "0.3 0.3 0.3" },
-            { pos: "0 0 0.3", scale: "0.3 0.3 0.3" },
-            { pos: "0 0 -0.3", scale: "0.3 0.3 0.3" }
-        ];
-
-        positions.forEach((config, index) => {
-            const entity = document.createElement('a-entity');
-            entity.setAttribute('gltf-model', '#spiritello-arcobaleno');
-            entity.setAttribute('position', config.pos);
-            entity.setAttribute('scale', config.scale);
-            entity.setAttribute('animation-mixer', 'clip: idle; loop: repeat');
-
-            // Animazione di rotazione per rendere la scena più viva
-            entity.setAttribute('animation', {
-                property: 'rotation',
-                to: '0 360 0',
-                dur: 10000 + (index * 2000),
-                loop: true,
-                easing: 'linear'
-            });
-
-            marker.appendChild(entity);
-        });
     }
 
     isAnyMarkerVisible() {

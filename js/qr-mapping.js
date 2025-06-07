@@ -8,7 +8,7 @@ window.qrToCharacterMap = {
     "4": "blu3",          // QR Code 4 -> Blu parte 3
     "5": "rosa",          // QR Code 5 -> Spiritello Rosa
     "6": "rosso",         // QR Code 6 -> Spiritello Rosso
-    "7": "arcobaleno"     // QR Code 7 -> Finale Arcobaleno
+    "7": "inizio"     // QR Code 7 -> Finale come Inizio
 };
 
 // Mantieni la struttura dati originale per i dialoghi
