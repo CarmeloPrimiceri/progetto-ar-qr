@@ -26,7 +26,7 @@ window.characterData = {
         animation: "idle",
         character: "spiritello-giallo",
         description: "Il personaggio entra in scena con i pacchi che gli cadono.",
-        dialog: "Hey aspetta! I tuoi pacchi...!",
+        dialog: "Lo spiritello entra in scena, ma i suoi pacchi... sono sparsi tutti per terra!",
         choices: [
             { text: "Hey aspetta!", nextStep: true },
             { text: "I tuoi pacchi...!", nextStep: true }
@@ -54,12 +54,12 @@ window.characterData = {
         animation: "idle",
         character: "spiritello-blu",
         description: "Spiritello che entra correndo in scena con tanta acqua in un pancione.",
-        dialog: "Scusa, hai bisogno di aiuto?",
+        dialog: "Lo Spiritello sta correndo in giro e ha il pancione pieno d'acqua!",
         choices: [
             { text: "Scusa, hai bisogno di aiuto?", nextStep: true },
             { text: "Dove corri?", nextStep: true }
         ],
-        nextDialog: "Lo spiritello sembra andare troppo di fretta, ma ti indica una direzione.",
+        nextDialog: "Lo Spiritello va troppo di fretta pr rispondere, ma ti indica una direzione...",
         nextChoices: [
             { text: "Vai al tubo che perde (Vai al marker blu 2)", nextMarker: "blu2" }
         ]
@@ -103,7 +103,7 @@ window.characterData = {
         animation: "idle",
         character: "spiritello-rosa",
         description: "Spiritello rosa stava camminando quando all'improvviso passa rotolando lo spiritello cattivo sopra i fiori.",
-        dialog: "oh no! I miei fiori...",
+        dialog: "Lo Spiritello stava camminando quando all'improvviso passa rotolando lo spiritello cattivo sopra i fiori! ...oh no! I miei fiori...",
         choices: [
             { text: "Oh non essere triste", nextStep: true },
             { text: "Ora ci vado a parlare io!", nextStep: true }
