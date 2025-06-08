@@ -305,3 +305,87 @@ class ARExperience {
         }
     }
 }
+
+// Gestione dell'audio e dell'overlay iniziale
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM completamente caricato");
+
+    const startOverlay = document.getElementById('start-overlay');
+    const startButton = document.getElementById('startExperience');
+    const toggleAudioBtn = document.getElementById('toggleAudio');
+    const audioIcon = document.getElementById('audioIcon');
+
+    let isAudioPlaying = false;
+    let audioEntity = null;
+    let arExperience = null;
+
+    // Funzione per inizializzare l'esperienza AR
+    function initARExperience() {
+        try {
+            arExperience = new ARExperience();
+            console.log("AR Experience inizializzata con successo");
+        } catch (error) {
+            console.error("Errore durante l'inizializzazione di ARExperience:", error);
+            alert("Errore: " + error.message);
+        }
+    }
+
+    // Inizia l'esperienza quando si clicca sul pulsante
+    if (startButton && startOverlay) {
+        startButton.addEventListener('click', function() {
+            startOverlay.style.display = 'none';
+
+            // Avvia l'audio
+            audioEntity = document.querySelector('a-entity[sound]');
+            if (audioEntity) {
+                // L'audio partirà automaticamente grazie all'interazione dell'utente
+                isAudioPlaying = true;
+            }
+
+            // Inizializza l'esperienza AR
+            initARExperience();
+        });
+    }
+
+    // Gestione pulsante audio
+    if (toggleAudioBtn && audioIcon) {
+        toggleAudioBtn.addEventListener('click', function() {
+            if (!audioEntity) {
+                audioEntity = document.querySelector('a-entity[sound]');
+            }
+
+            if (audioEntity) {
+                if (isAudioPlaying) {
+                    audioEntity.setAttribute('sound', 'volume', 0);
+                    audioIcon.textContent = '🔇';
+                } else {
+                    audioEntity.setAttribute('sound', 'volume', 0.5);
+                    audioIcon.textContent = '🔊';
+                }
+                isAudioPlaying = !isAudioPlaying;
+            }
+        });
+    }
+
+    // Gestione visibilità pagina (pausa audio quando si cambia tab)
+    document.addEventListener('visibilitychange', function() {
+        if (audioEntity) {
+            if (document.hidden) {
+                audioEntity.components.sound.pauseSound();
+            } else if (isAudioPlaying) {
+                audioEntity.components.sound.playSound();
+            }
+        }
+    });
+
+    // Debug mode toggle con tasto D
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'd' || e.key === 'D') {
+            const debugInfo = document.getElementById('debug-info');
+            if (debugInfo) {
+                debugInfo.style.display =
+                    debugInfo.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+    });
+});
