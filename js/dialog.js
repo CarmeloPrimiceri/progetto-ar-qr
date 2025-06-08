@@ -62,7 +62,7 @@ window.DialogSystem = class {
         let choices = [];
 
         // Gestione per il QR code arcobaleno (finale con più personaggi)
-        if (markerId === "arcobaleno" && state.step > 0 && data.dialogs) {
+        if (markerId === "finale" && state.step > 0 && data.dialogs) {
             // Se siamo nei dialoghi multipli del finale
             if (state.step <= data.dialogs.length) {
                 const dialogItem = data.dialogs[state.step - 1];
@@ -226,8 +226,8 @@ window.DialogSystem = class {
             case "rosso":
                 qrDescription = "rosso";
                 break;
-            case "arcobaleno":
-                qrDescription = "arcobaleno";
+            case "finale":
+                qrDescription = "finale";
                 break;
             default:
                 qrDescription = nextMarker;
