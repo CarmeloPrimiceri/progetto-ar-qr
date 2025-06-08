@@ -34,7 +34,7 @@
     <div class="start-container">
         <h2>Il Mondo degli Spiritelli</h2>
         <p>Un'avventura in Realtà Aumentata</p>
-        <p class="qr-info">Cerca i QR code numerati da 0 a 5 per seguire la storia!</p>
+        <p class="qr-info">Cerca i QR code numerati da 0 a 7 per seguire la storia!</p>
         <button id="startExperience" class="start-btn">Inizia Esperienza</button>
     </div>
 </div>
@@ -56,6 +56,12 @@
     <div class="choices-container"></div>
 </div>
 
+<!-- Controlli audio -->
+<div class="audio-controls">
+    <button id="toggleAudio" class="audio-btn">
+        <span id="audioIcon">🔊</span>
+    </button>
+</div>
 
 <!-- QR Scanner Frame (opzionale, per guidare l'utente) -->
 <div class="qr-scanner-frame" id="qrScannerFrame">
@@ -83,11 +89,17 @@
     <a-assets>
         <!-- Modelli 3D -->
         <a-asset-item id="spiritello-inizio" src="assets/models/Spiriti.glb"></a-asset-item>
-        <a-asset-item id="spiritello-giallo" src="assets/models/Pacchi.glb"></a-asset-item> <!-- da cambiare -->
+        <a-asset-item id="spiritello-giallo" src="assets/models/Pacchi.glb"></a-asset-item>
         <a-asset-item id="spiritello-blu" src="assets/models/Acqua.glb"></a-asset-item>
         <a-asset-item id="spiritello-rosa" src="assets/models/Fiorellino.glb"></a-asset-item>
         <a-asset-item id="spiritello-rosso" src="assets/models/Cattivone.glb"></a-asset-item>
+
+        <!-- Audio di sottofondo -->
+        <audio id="background-music" src="assets/audio/background-music.mp3" preload="auto" loop></audio>
     </a-assets>
+
+    <!-- Entità audio -->
+    <a-entity sound="src: #background-music; autoplay: true; loop: true; volume: 0.5"></a-entity>
 
     <!-- Marker QR/Barcode (valori 0-7 per gli 8 QR code della storia) -->
     <a-marker type="barcode" value="0" id="qr-0">
