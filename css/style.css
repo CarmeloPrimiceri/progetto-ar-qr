@@ -174,35 +174,6 @@ body {
     opacity: 1;
 }
 
-/* Controlli audio - Posizione mobile friendly */
-.audio-controls {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 1001;
-}
-
-.audio-btn {
-    background: rgba(26, 26, 46, 0.8);
-    backdrop-filter: blur(10px);
-    color: white;
-    border: 1px solid rgba(92, 225, 230, 0.3);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
-}
-
-.audio-btn:active {
-    transform: scale(0.9);
-}
-
 /* Overlay iniziale - Mobile optimized */
 .start-overlay {
     position: fixed;
@@ -380,10 +351,6 @@ body {
     .debug-info {
         bottom: max(10px, env(safe-area-inset-bottom));
     }
-
-    .audio-controls {
-        top: max(10px, env(safe-area-inset-top));
-    }
 }
 
 /* Landscape mode adjustments */
@@ -397,16 +364,5 @@ body {
         top: 5px;
         padding: 8px 12px;
         font-size: 12px;
-    }
-
-    .audio-controls {
-        top: 5px;
-        right: 5px;
-    }
-
-    .audio-btn {
-        width: 35px;
-        height: 35px;
-        font-size: 18px;
     }
 }
